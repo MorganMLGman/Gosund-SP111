@@ -1,0 +1,10 @@
+packages:
+  core: !include gosund_sp111.yaml
+
+esphome:
+  project:
+    name: MorganMLGman.Gosund-SP111
+    version: dev
+
+dashboard_import:
+  package_import_url: github://MorganMLGman/Gosund-SP111/gosund_sp111.yaml@main

@@ -1,0 +1,276 @@
+esphome:
+  name: gosund_sp111
+  friendly_name: Gosund SP111
+  name_add_mac_suffix: True
+
+  project:
+    name: MorganMLGman.Gosund-SP111
+    version: "1.0.0"
+
+esp8266:
+  board: esp8285
+  framework:
+    version: recommended
+
+logger:
+  level: DEBUG
+  baud_rate: 0
+
+wifi:
+  reboot_timeout: 10min
+  ap:
+
+captive_portal:
+
+api:
+  reboot_timeout: 10min
+
+ota:
+  - platform: esphome
+    id: ota_esphome
+  - platform: http_request
+    id: ota_http_request
+
+http_request:
+
+web_server:
+  port: 80
+  local: true
+  ota: true
+  include_internal: True
+  version: 3
+
+update:
+  - platform: http_request
+    id: update_http_request
+    update_interval: 1h
+    name: Firmware
+    source: https://morganmlgman.github.io/Gosund-SP111/firmware/gosund_sp111.manifest.json
+    disabled_by_default: false
+
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+
+text_sensor:
+  - platform: version
+    name: ESPHome Version
+    entity_category: "diagnostic"
+
+  - platform: wifi_info
+    ip_address:
+      name: IP Address
+      entity_category: "diagnostic"
+    ssid:
+      name: WiFi SSID
+      entity_category: "diagnostic"
+    bssid:
+      name: WiFi BSSID
+      entity_category: "diagnostic"
+
+binary_sensor:
+  - platform: status
+    id: esp_status
+    name: Status
+    device_class: connectivity
+  
+  - platform: gpio
+    pin:
+      number: GPIO13
+      mode: INPUT_PULLUP
+      inverted: True
+    id: button_state
+    name: Button
+    on_click:
+      - min_length: 50ms
+        max_length: 350ms
+        if:
+          condition:
+            lock.is_locked: child_lock
+          then:
+            - switch.toggle: button_switch   
+      - min_length: 3s
+        max_length: 5s
+          if:
+            condition:
+              lock.is_locked: child_lock
+            then:
+              lock.unlock: child_lock
+            else:
+              lock.lock: child_lock
+      - min_length: 10s
+        max_length: 30s
+          then:
+            - button.press: factory_reset_button
+
+sensor:
+  - platform: wifi_signal
+    name: WiFi Signal dB
+    id: wifi_signal_db
+    update_interval: 60s
+    entity_category: "diagnostic"
+
+  - platform: copy
+    source_id: wifi_signal_db
+    name: WiFi Signal Percent
+    filters:
+      - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
+    unit_of_measurement: "Signal %"
+    entity_category: "diagnostic"
+
+  - platform: uptime
+    name: Uptime
+    update_interval: 60s
+    accuracy_decimals: 0
+    icon: mdi:clock-outline
+    entity_category: "diagnostic"
+
+  - platform: total_daily_energy
+    name: Daily Energy Consumed
+    power_id: "power_wattage"
+    filters:
+      - multiply: 0.001
+    unit_of_measurement: kWh
+    icon: mdi:calendar-clock
+
+  - platform: integration
+    name: Total Energy Consumed
+    sensor: power_wattage
+    time_unit: h
+    restore: True
+    filters:
+        - multiply: 0.001
+    unit_of_measurement: kWh
+    icon: mdi:clock-alert
+    device_class: "energy"
+    state_class: "total_increasing"
+
+  - platform: adc
+    pin: VCC
+    name: VCC Volt
+    icon: mdi:flash-outline
+
+  - platform: hlw8012
+    sel_pin:
+      number: GPIO12
+      inverted: True
+    cf_pin: GPIO05
+    cf1_pin: GPIO04
+    change_mode_every: 5
+    current_resistor: id(global_current_res)
+    voltage_divider: id(global_voltage_div)
+    update_interval: 2s
+
+    current:
+      name: Ampere
+      unit_of_measurement: A
+      accuracy_decimals: 3
+      icon: mdi:current-ac
+      filters:
+        - sliding_window_moving_average:
+            window_size: 5      
+
+    voltage:
+      name: Volt
+      unit_of_measurement: V
+      accuracy_decimals: 2
+      icon: mdi:flash-outline
+      filters:
+        - sliding_window_moving_average:
+            window_size: 5        
+
+    power:
+      name: Watt
+      unit_of_measurement: W
+      id: "power_wattage"
+      accuracy_decimals: 2
+      icon: mdi:gauge
+      filters:
+        - sliding_window_moving_average:
+            window_size: 5
+
+button:
+  - platform: shutdown
+    name: Shut Down
+
+  - platform: restart
+    name: Restart
+  
+  - platform: safe_mode
+    name: Safe Mode
+
+  - platform: factory_reset
+    id: factory_reset_button
+    name: Factory Reset
+
+lock:
+  - platform: template
+    name: Child Lock
+    optimistic: true
+    id: child_lock
+    entity_category: "config"
+    assumed_state: true
+
+status_led:
+  pin:
+    number: GPIO02
+    inverted: True
+  id: led_blue
+
+output:
+  - platform: gpio
+    pin: GPIO00
+    inverted: true
+    id: led_red
+  
+  - platform: gpio
+    pin: GPIO15
+    id: relay
+
+switch:
+  - platform: template
+    name: Switch
+    icon: mdi:power
+    optimistic: true
+    id: button_switch
+    restore_mode: RESTORE_DEFAULT_OFF
+
+    turn_on_action:
+      - output.turn_on: relay
+      - output.turn_on: led_red
+    turn_off_action:
+      - output.turn_off: relay
+      - output.turn_off: led_red
+
+number:
+  - platform: template
+    id: current_res
+    name: "Current Resistor"
+    mode: box
+    optimistic: true
+    restore_value: true
+    min_value: 0
+    max_value: 1
+    initial_value: 0.00241
+    step: 0.00001
+  
+  - platform: template
+    id: voltage_div
+    name: "Voltage Divider"
+    mode: box
+    optimistic: true
+    restore_value: true
+    min_value: 0
+    max_value: 1500
+    initial_value: 675
+    step: 1
+
+global:
+  - id: global_current_res
+    type: float
+    initial_value: 0.00241
+    restore_value: true
+  - id: global_voltage_div
+    type: float
+    initial_value: 675
+    restore_value: true
