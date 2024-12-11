@@ -14,7 +14,7 @@ esphome:
 
   project:
     name: MorganMLGman.Gosund-SP111
-    version: "1.0.5"
+    version: "1.0.6"
 
 esp8266:
   board: esp8285
@@ -105,7 +105,13 @@ binary_sensor:
       - min_length: 3s
         max_length: 8s
         then:
-          - script.execute: blinkTwice
+          - light.turn_on: led_blue
+          - delay: 100ms
+          - light.turn_off: led_blue
+          - delay: 300ms
+          - light.turn_on: led_blue
+          - delay: 100ms
+          - light.turn_off: led_blue
           - if:
               condition:
                 lock.is_locked: child_lock
@@ -259,14 +265,4 @@ switch:
       - output.turn_off: relay
       - output.turn_off: led_red
 
-script:
-  - id: blinkTwice
-    mode: single
-    then:
-      - light.turn_on: led_blue
-      - delay: 100ms
-      - light.turn_off: led_blue
-      - delay: 300ms
-      - light.turn_on: led_blue
-      - delay: 100ms
-      - light.turn_off: led_blue
+      
