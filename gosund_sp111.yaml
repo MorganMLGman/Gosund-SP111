@@ -1,3 +1,7 @@
+substitutions:
+  current_res: "0.00242"
+  voltage_div: "940"
+
 esphome:
   name: gosund_sp111
   friendly_name: Gosund SP111
@@ -32,6 +36,7 @@ ota:
     id: ota_http_request
 
 http_request:
+  verify_ssl: false
 
 web_server:
   port: 80
@@ -84,24 +89,26 @@ binary_sensor:
     on_click:
       - min_length: 50ms
         max_length: 350ms
-        if:
-          condition:
-            lock.is_locked: child_lock
-          then:
-            - switch.toggle: button_switch   
+        then:
+          - if:
+              condition:
+                lock.is_locked: child_lock
+              then:
+                - switch.toggle: button_switch   
       - min_length: 3s
         max_length: 5s
-          if:
-            condition:
-              lock.is_locked: child_lock
-            then:
-              lock.unlock: child_lock
-            else:
-              lock.lock: child_lock
+        then:
+          - if:
+              condition:
+                lock.is_locked: child_lock
+              then:
+                lock.unlock: child_lock
+              else:
+                lock.lock: child_lock
       - min_length: 10s
         max_length: 30s
-          then:
-            - button.press: factory_reset_button
+        then:
+          - button.press: factory_reset_button
 
 sensor:
   - platform: wifi_signal
@@ -157,8 +164,8 @@ sensor:
     cf_pin: GPIO05
     cf1_pin: GPIO04
     change_mode_every: 5
-    current_resistor: id(global_current_res)
-    voltage_divider: id(global_voltage_div)
+    current_resistor: ${current_res}
+    voltage_divider: ${voltage_div}
     update_interval: 2s
 
     current:
@@ -241,36 +248,3 @@ switch:
     turn_off_action:
       - output.turn_off: relay
       - output.turn_off: led_red
-
-number:
-  - platform: template
-    id: current_res
-    name: "Current Resistor"
-    mode: box
-    optimistic: true
-    restore_value: true
-    min_value: 0
-    max_value: 1
-    initial_value: 0.00241
-    step: 0.00001
-  
-  - platform: template
-    id: voltage_div
-    name: "Voltage Divider"
-    mode: box
-    optimistic: true
-    restore_value: true
-    min_value: 0
-    max_value: 1500
-    initial_value: 675
-    step: 1
-
-global:
-  - id: global_current_res
-    type: float
-    initial_value: 0.00241
-    restore_value: true
-  - id: global_voltage_div
-    type: float
-    initial_value: 675
-    restore_value: true
