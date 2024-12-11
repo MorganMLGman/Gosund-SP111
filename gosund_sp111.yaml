@@ -92,7 +92,7 @@ binary_sensor:
         then:
           - if:
               condition:
-                lock.is_locked: child_lock
+                lock.is_unlocked: child_lock
               then:
                 - switch.toggle: button_switch   
       - min_length: 3s
