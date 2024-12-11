@@ -47,10 +47,10 @@ ota:
 
 web_server:
   port: 80
-  # local: true
+  local: false
   ota: true
   include_internal: True
-  version: 1
+  version: 2
 
 # update:
 #   - platform: http_request
