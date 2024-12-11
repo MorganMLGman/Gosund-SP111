@@ -166,10 +166,10 @@ sensor:
     device_class: "energy"
     state_class: "total_increasing"
 
-  - platform: adc
-    pin: VCC
-    name: VCC Volt
-    icon: mdi:flash-outline
+  # - platform: adc
+  #   pin: VCC
+  #   name: VCC Volt
+  #   icon: mdi:flash-outline
 
   - platform: hlw8012
     sel_pin:
