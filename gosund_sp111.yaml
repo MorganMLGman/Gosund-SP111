@@ -7,6 +7,11 @@ esphome:
   friendly_name: Gosund SP111
   name_add_mac_suffix: True
 
+  on_boot:
+    priority: -100
+    then:
+      - lock.unlock: child_lock
+
   project:
     name: MorganMLGman.Gosund-SP111
     version: "1.0.3"
