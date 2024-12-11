@@ -103,8 +103,9 @@ binary_sensor:
               then:
                 - switch.toggle: button_switch   
       - min_length: 3s
-        max_length: 5s
+        max_length: 8s
         then:
+          - script.execute: blinkTwice
           - if:
               condition:
                 lock.is_locked: child_lock
@@ -225,11 +226,13 @@ lock:
     entity_category: "config"
     assumed_state: true
 
-status_led:
-  pin:
-    number: GPIO02
-    inverted: True
-  id: led_blue
+
+light:
+  - platform: status_led
+    pin:
+      number: GPIO02
+      inverted: True
+    id: led_blue
 
 output:
   - platform: gpio
@@ -255,3 +258,15 @@ switch:
     turn_off_action:
       - output.turn_off: relay
       - output.turn_off: led_red
+
+script:
+  - id: blinkTwice
+    mode: single
+    then:
+      - light.turn_on: led_blue
+      - delay: 100ms
+      - light.turn_off: led_blue
+      - delay: 300ms
+      - light.turn_on: led_blue
+      - delay: 100ms
+      - light.turn_off: led_blue
