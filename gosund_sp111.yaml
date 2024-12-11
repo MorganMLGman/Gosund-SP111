@@ -45,12 +45,12 @@ ota:
 # http_request:
 #   verify_ssl: false
 
-web_server:
-  port: 80
-  local: true
-  ota: true
-  include_internal: True
-  version: 2
+# web_server:
+#   port: 80
+#   local: true
+#   ota: true
+#   include_internal: True
+#   version: 2
 
 # update:
 #   - platform: http_request
@@ -64,21 +64,21 @@ time:
   - platform: homeassistant
     id: homeassistant_time
 
-text_sensor:
-  - platform: version
-    name: ESPHome Version
-    entity_category: "diagnostic"
+# text_sensor:
+#   - platform: version
+#     name: ESPHome Version
+#     entity_category: "diagnostic"
 
-  - platform: wifi_info
-    ip_address:
-      name: IP Address
-      entity_category: "diagnostic"
-    ssid:
-      name: WiFi SSID
-      entity_category: "diagnostic"
-    bssid:
-      name: WiFi BSSID
-      entity_category: "diagnostic"
+#   - platform: wifi_info
+#     ip_address:
+#       name: IP Address
+#       entity_category: "diagnostic"
+#     ssid:
+#       name: WiFi SSID
+#       entity_category: "diagnostic"
+#     bssid:
+#       name: WiFi BSSID
+#       entity_category: "diagnostic"
 
 binary_sensor:
   - platform: status
