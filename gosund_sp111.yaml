@@ -16,15 +16,15 @@ esp8266:
   framework:
     version: recommended
 
-logger:
-  level: DEBUG
-  baud_rate: 0
+# logger:
+#   level: DEBUG
+#   baud_rate: 0
 
 wifi:
   reboot_timeout: 10min
   ap:
 
-captive_portal:
+# captive_portal:
 
 # api:
 #   reboot_timeout: 10min
@@ -218,11 +218,11 @@ ota:
 #     entity_category: "config"
 #     assumed_state: true
 
-status_led:
-  pin:
-    number: GPIO02
-    inverted: True
-  id: led_blue
+# status_led:
+#   pin:
+#     number: GPIO02
+#     inverted: True
+#   id: led_blue
 
 # output:
 #   - platform: gpio
