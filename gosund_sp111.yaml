@@ -26,8 +26,8 @@ wifi:
 
 captive_portal:
 
-api:
-  reboot_timeout: 10min
+# api:
+#   reboot_timeout: 10min
 
 ota:
   - platform: esphome
@@ -53,9 +53,9 @@ ota:
 #     source: https://morganmlgman.github.io/Gosund-SP111/firmware/gosund_sp111.manifest.json
 #     disabled_by_default: false
 
-time:
-  - platform: homeassistant
-    id: homeassistant_time
+# time:
+#   - platform: homeassistant
+#     id: homeassistant_time
 
 # text_sensor:
 #   - platform: version
@@ -196,27 +196,27 @@ time:
 #         - sliding_window_moving_average:
 #             window_size: 5
 
-button:
-  - platform: shutdown
-    name: Shut Down
+# button:
+#   - platform: shutdown
+#     name: Shut Down
 
-  - platform: restart
-    name: Restart
+#   - platform: restart
+#     name: Restart
   
-  - platform: safe_mode
-    name: Safe Mode
+#   - platform: safe_mode
+#     name: Safe Mode
 
-  - platform: factory_reset
-    id: factory_reset_button
-    name: Factory Reset
+#   - platform: factory_reset
+#     id: factory_reset_button
+#     name: Factory Reset
 
-lock:
-  - platform: template
-    name: Child Lock
-    optimistic: true
-    id: child_lock
-    entity_category: "config"
-    assumed_state: true
+# lock:
+#   - platform: template
+#     name: Child Lock
+#     optimistic: true
+#     id: child_lock
+#     entity_category: "config"
+#     assumed_state: true
 
 status_led:
   pin:
@@ -224,27 +224,27 @@ status_led:
     inverted: True
   id: led_blue
 
-output:
-  - platform: gpio
-    pin: GPIO00
-    inverted: true
-    id: led_red
+# output:
+#   - platform: gpio
+#     pin: GPIO00
+#     inverted: true
+#     id: led_red
   
-  - platform: gpio
-    pin: GPIO15
-    id: relay
+#   - platform: gpio
+#     pin: GPIO15
+#     id: relay
 
-switch:
-  - platform: template
-    name: Switch
-    icon: mdi:power
-    optimistic: true
-    id: button_switch
-    restore_mode: RESTORE_DEFAULT_OFF
+# switch:
+#   - platform: template
+#     name: Switch
+#     icon: mdi:power
+#     optimistic: true
+#     id: button_switch
+#     restore_mode: RESTORE_DEFAULT_OFF
 
-    turn_on_action:
-      - output.turn_on: relay
-      - output.turn_on: led_red
-    turn_off_action:
-      - output.turn_off: relay
-      - output.turn_off: led_red
+#     turn_on_action:
+#       - output.turn_on: relay
+#       - output.turn_on: led_red
+#     turn_off_action:
+#       - output.turn_off: relay
+#       - output.turn_off: led_red
